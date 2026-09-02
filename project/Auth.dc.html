@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.977 0.008 90); -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #1A233D; text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { color: #263455; }
+  input, button, textarea { font: inherit; }
+  input::placeholder { color: #9AA0AC; }
+  input:focus-visible, button:focus-visible { outline: 2px solid #D4A02A; outline-offset: 2px; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; display: grid; grid-template-columns: 1fr; font-family: Poppins, system-ui, sans-serif; color: #1A233D; background: oklch(0.977 0.008 90);">
+
+  <div style="display: none;"></div>
+
+  <!-- ── LEFT BRAND PANEL (desktop) ─────────── -->
+  <div style="display: none;"></div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); min-height: 100vh;">
+
+
+    <div style="display: flex; align-items: center; justify-content: center; padding: clamp(28px, 5vw, 64px) clamp(16px, 4vw, 48px) clamp(48px, 6vw, 64px);">
+      <div style="width: 100%; max-width: 420px;">
+
+        <!-- ── SIGN IN ──────────────────────────── -->
+        <sc-if value="{{ isSignin }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(28px, 4vw, 34px); line-height: 1.15; margin: 0 0 10px;">Welcome back</h1>
+            <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0 0 32px;">Sign in to pick up your application.</p>
+
+            <div style="display: grid; gap: 18px;">
+              <div>
+                <label for="si-email" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 8px;">Email address</label>
+                <input id="si-email" type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="you@example.com" autoComplete="email" style="width: 100%; min-height: 48px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 15px; color: #1A233D;">
+              </div>
+              <div>
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+                  <label for="si-pw" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76;">Password</label>
+                  <button type="button" onClick="{{ goForgot }}" style="background: none; border: 0; padding: 2px 0; font-size: 12.5px; font-weight: 500; color: #656A76; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">Forgot password?</button>
+                </div>
+                <div style="position: relative;">
+                  <input id="si-pw" type="{{ pwType }}" value="{{ password }}" onChange="{{ setPassword }}" placeholder="Enter your password" autoComplete="current-password" style="width: 100%; min-height: 48px; padding: 12px 76px 12px 16px; border-radius: 12px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 15px; color: #1A233D;">
+                  <button type="button" onClick="{{ togglePw }}" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; font-size: 12.5px; font-weight: 600; color: #656A76; cursor: pointer;" style-hover="background: #F5F3ED">{{ pwToggleLabel }}</button>
+                </div>
+              </div>
+
+              <sc-if value="{{ signinError }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: oklch(0.58 0.18 28 / 0.08); border: 1px solid oklch(0.58 0.18 28 / 0.28);">
+                  <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.58 0.18 28); margin-top: 6px; flex: none;"></span>
+                  <span style="font-size: 13.5px; line-height: 1.55; color: oklch(0.48 0.16 28);">That email and password don't match our records. Check both and try again.</span>
+                </div>
+              </sc-if>
+
+              <label style="display: flex; gap: 10px; align-items: center; cursor: pointer;">
+                <input type="checkbox" checked="{{ remember }}" onChange="{{ toggleRemember }}" style="width: 18px; height: 18px; accent-color: #1A233D; flex: none;">
+                <span style="font-size: 13.5px; color: #656A76;">Keep me signed in on this device</span>
+              </label>
+
+              <button type="button" onClick="{{ submitSignin }}" disabled="{{ signinDisabled }}" style="min-height: 50px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer; opacity: {{ signinOpacity }};" style-hover="background: #263455">Sign in</button>
+
+              <div style="display: flex; align-items: center; gap: 14px; margin: 4px 0;">
+                <div style="height: 1px; flex: 1; background: rgba(26,35,61,.12);"></div>
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #9AA0AC;">or</span>
+                <div style="height: 1px; flex: 1; background: rgba(26,35,61,.12);"></div>
+              </div>
+
+              <button type="button" style="min-height: 50px; border-radius: 10px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 14.5px; font-weight: 600; color: #1A233D; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;" style-hover="background: #F5F3ED">
+                <svg width="17" height="17" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"></path><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.34A9 9 0 0 0 9 18z"></path><path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.94H.96a9 9 0 0 0 0 8.12l3.01-2.34z"></path><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.46 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.94l3.01 2.34C4.68 5.16 6.66 3.58 9 3.58z"></path></svg>
+                Continue with Google
+              </button>
+
+              <p style="font-size: 13.5px; color: #656A76; margin: 8px 0 0; text-align: center;">New to AXP? <button type="button" onClick="{{ goSignup }}" style="background: none; border: 0; padding: 0; font-size: 13.5px; font-weight: 600; color: #1A233D; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">Create an account</button></p>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ── SIGN UP ──────────────────────────── -->
+        <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(28px, 4vw, 34px); line-height: 1.15; margin: 0 0 10px;">Create your account</h1>
+            <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0 0 32px;">Takes about two minutes. You'll upload documents later.</p>
+
+            <div style="display: grid; gap: 18px;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
+                <div>
+                  <label for="su-first" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 8px;">First name</label>
+                  <input id="su-first" type="text" value="{{ firstName }}" onChange="{{ setFirstName }}" placeholder="Adaeze" autoComplete="given-name" style="width: 100%; min-height: 48px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 15px; color: #1A233D;">
+                </div>
+                <div>
+                  <label for="su-last" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 8px;">Last name</label>
+                  <input id="su-last" type="text" value="{{ lastName }}" onChange="{{ setLastName }}" placeholder="Okonkwo" autoComplete="family-name" style="width: 100%; min-height: 48px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 15px; color: #1A233D;">
+                </div>
+              </div>
+
+              <div>
+                <label for="su-email" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 8px;">Email address</label>
+                <input id="su-email" type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="you@example.com" autoComplete="email" style="width: 100%; min-height: 48px; padding: 12px 16px; border-radius: 12px; border: 1px solid; border-color: {{ emailBorder }}; background: #FFFFFF; font-size: 15px; color: #1A233D;">
+                <div style="font-size: 12.5px; color: {{ emailHintColor }}; margin-top: 8px; line-height: 1.5;">{{ emailHint }}</div>
+              </div>
+
+              <div>
+                <label for="su-pw" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 8px;">Password</label>
+                <div style="position: relative;">
+                  <input id="su-pw" type="{{ pwType }}" value="{{ password }}" onChange="{{ setPassword }}" placeholder="At least 8 characters" autoComplete="new-password" style="width: 100%; min-height: 48px; padding: 12px 76px 12px 16px; border-radius: 12px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 15px; color: #1A233D;">
+                  <button type="button" onClick="{{ togglePw }}" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; font-size: 12.5px; font-weight: 600; color: #656A76; cursor: pointer;" style-hover="background: #F5F3ED">{{ pwToggleLabel }}</button>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-top: 10px;">
+                  <div style="height: 3px; border-radius: 999px; background: {{ str1 }};"></div>
+                  <div style="height: 3px; border-radius: 999px; background: {{ str2 }};"></div>
+                  <div style="height: 3px; border-radius: 999px; background: {{ str3 }};"></div>
+                </div>
+                <div style="font-size: 12.5px; color: #656A76; margin-top: 8px; line-height: 1.5;">{{ strengthLabel }}</div>
+              </div>
+
+              <label style="display: flex; gap: 12px; align-items: flex-start; cursor: pointer;">
+                <input type="checkbox" checked="{{ terms }}" onChange="{{ toggleTerms }}" style="width: 20px; height: 20px; margin-top: 1px; accent-color: #1A233D; flex: none;">
+                <span style="font-size: 13.5px; line-height: 1.6; color: #656A76;">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>, and to AXP verifying my identity as required by law.</span>
+              </label>
+
+              <button type="button" onClick="{{ submitSignup }}" disabled="{{ signupDisabled }}" style="min-height: 50px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer; opacity: {{ signupOpacity }};" style-hover="background: #263455">Create account</button>
+
+              <div style="display: flex; align-items: center; gap: 14px; margin: 4px 0;">
+                <div style="height: 1px; flex: 1; background: rgba(26,35,61,.12);"></div>
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #9AA0AC;">or</span>
+                <div style="height: 1px; flex: 1; background: rgba(26,35,61,.12);"></div>
+              </div>
+
+              <button type="button" style="min-height: 50px; border-radius: 10px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 14.5px; font-weight: 600; color: #1A233D; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;" style-hover="background: #F5F3ED">
+                <svg width="17" height="17" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.91c1.7-1.57 2.69-3.88 2.69-6.62z"></path><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.34A9 9 0 0 0 9 18z"></path><path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.94H.96a9 9 0 0 0 0 8.12l3.01-2.34z"></path><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.46 3.44 1.35l2.58-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.94l3.01 2.34C4.68 5.16 6.66 3.58 9 3.58z"></path></svg>
+                Continue with Google
+              </button>
+
+              <p style="font-size: 13.5px; color: #656A76; margin: 8px 0 0; text-align: center;">Already have an account? <button type="button" onClick="{{ goSignin }}" style="background: none; border: 0; padding: 0; font-size: 13.5px; font-weight: 600; color: #1A233D; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">Sign in</button></p>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ── OTP ──────────────────────────────── -->
+        <sc-if value="{{ isOtp }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <button type="button" onClick="{{ goSignup }}" style="background: none; border: 0; padding: 6px 0; margin-bottom: 20px; font-size: 13px; font-weight: 500; color: #656A76; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#656A76" stroke-width="1.6" stroke-linecap="round"><path d="M9.5 3.5 5 8l4.5 4.5"></path></svg>Back
+            </button>
+            <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(28px, 4vw, 34px); line-height: 1.15; margin: 0 0 10px;">Confirm your email</h1>
+            <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0 0 32px; text-wrap: pretty;">We sent a 6-digit code to <strong style="color: #1A233D; font-weight: 600;">{{ emailDisplay }}</strong>. It expires in 10 minutes.</p>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+              <input type="text" inputMode="numeric" maxLength="1" value="{{ o0 }}" onChange="{{ setO0 }}" ref="{{ ref0 }}" style="width: 100%; min-width: 0; height: 60px; text-align: center; font-size: 22px; font-weight: 600; border-radius: 12px; border: 1px solid; border-color: {{ otpBorder }}; background: #FFFFFF; color: #1A233D;">
+              <input type="text" inputMode="numeric" maxLength="1" value="{{ o1 }}" onChange="{{ setO1 }}" ref="{{ ref1 }}" style="width: 100%; min-width: 0; height: 60px; text-align: center; font-size: 22px; font-weight: 600; border-radius: 12px; border: 1px solid; border-color: {{ otpBorder }}; background: #FFFFFF; color: #1A233D;">
+              <input type="text" inputMode="numeric" maxLength="1" value="{{ o2 }}" onChange="{{ setO2 }}" ref="{{ ref2 }}" style="width: 100%; min-width: 0; height: 60px; text-align: center; font-size: 22px; font-weight: 600; border-radius: 12px; border: 1px solid; border-color: {{ otpBorder }}; background: #FFFFFF; color: #1A233D;">
+              <input type="text" inputMode="numeric" maxLength="1" value="{{ o3 }}" onChange="{{ setO3 }}" ref="{{ ref3 }}" style="width: 100%; min-width: 0; height: 60px; text-align: center; font-size: 22px; font-weight: 600; border-radius: 12px; border: 1px solid; border-color: {{ otpBorder }}; background: #FFFFFF; color: #1A233D;">
+              <input type="text" inputMode="numeric" maxLength="1" value="{{ o4 }}" onChange="{{ setO4 }}" ref="{{ ref4 }}" style="width: 100%; min-width: 0; height: 60px; text-align: center; font-size: 22px; font-weight: 600; border-radius: 12px; border: 1px solid; border-color: {{ otpBorder }}; background: #FFFFFF; color: #1A233D;">
+              <input type="text" inputMode="numeric" maxLength="1" value="{{ o5 }}" onChange="{{ setO5 }}" ref="{{ ref5 }}" style="width: 100%; min-width: 0; height: 60px; text-align: center; font-size: 22px; font-weight: 600; border-radius: 12px; border: 1px solid; border-color: {{ otpBorder }}; background: #FFFFFF; color: #1A233D;">
+            </div>
+
+            <sc-if value="{{ otpError }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: oklch(0.58 0.18 28 / 0.08); border: 1px solid oklch(0.58 0.18 28 / 0.28); margin-bottom: 20px;">
+                <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.58 0.18 28); margin-top: 6px; flex: none;"></span>
+                <span style="font-size: 13.5px; line-height: 1.55; color: oklch(0.48 0.16 28);">That code isn't right. Enter the most recent code we sent, or request a new one.</span>
+              </div>
+            </sc-if>
+
+            <button type="button" onClick="{{ submitOtp }}" disabled="{{ otpDisabled }}" style="width: 100%; min-height: 50px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer; opacity: {{ otpOpacity }};" style-hover="background: #263455">Verify email</button>
+
+            <div style="margin-top: 22px; padding-top: 22px; border-top: 1px solid rgba(26,35,61,.10); font-size: 13.5px; color: #656A76; line-height: 1.7;">
+              <sc-if value="{{ canResend }}" hint-placeholder-val="{{ false }}">
+                <div>Didn't get it? <button type="button" onClick="{{ resend }}" style="background: none; border: 0; padding: 0; font-size: 13.5px; font-weight: 600; color: #1A233D; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">Send a new code</button></div>
+              </sc-if>
+              <sc-if value="{{ counting }}" hint-placeholder-val="{{ true }}">
+                <div>You can request a new code in {{ countdown }}s.</div>
+              </sc-if>
+              <div style="margin-top: 4px;">Check your spam folder if it hasn't arrived after a minute.</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ── FORGOT PASSWORD ──────────────────── -->
+        <sc-if value="{{ isForgot }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <button type="button" onClick="{{ goSignin }}" style="background: none; border: 0; padding: 6px 0; margin-bottom: 20px; font-size: 13px; font-weight: 500; color: #656A76; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#656A76" stroke-width="1.6" stroke-linecap="round"><path d="M9.5 3.5 5 8l4.5 4.5"></path></svg>Back to sign in
+            </button>
+            <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(28px, 4vw, 34px); line-height: 1.15; margin: 0 0 10px;">Reset your password</h1>
+            <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0 0 32px; text-wrap: pretty;">Enter the email on your account and we'll send a 6-digit code to confirm it's you.</p>
+
+            <div style="display: grid; gap: 18px;">
+              <div>
+                <label for="fp-email" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 8px;">Email address</label>
+                <input id="fp-email" type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="you@example.com" autoComplete="email" style="width: 100%; min-height: 48px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 15px; color: #1A233D;">
+              </div>
+              <button type="button" onClick="{{ submitForgot }}" disabled="{{ forgotDisabled }}" style="min-height: 50px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer; opacity: {{ forgotOpacity }};" style-hover="background: #263455">Send code</button>
+            </div>
+
+            <div style="margin-top: 24px; padding: 16px; border-radius: 12px; background: #F5F3ED; border: 1px solid rgba(26,35,61,.08); font-size: 13px; line-height: 1.65; color: #656A76; text-wrap: pretty;">If an account exists for that address, the code arrives within a minute. For security we don't confirm whether an email is registered.</div>
+          </div>
+        </sc-if>
+
+        <!-- ── RESET PASSWORD ───────────────────── -->
+        <sc-if value="{{ isReset }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(28px, 4vw, 34px); line-height: 1.15; margin: 0 0 10px;">Choose a new password</h1>
+            <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0 0 32px; text-wrap: pretty;">Code confirmed for <strong style="color: #1A233D; font-weight: 600;">{{ emailDisplay }}</strong>. Your new password signs you in everywhere.</p>
+
+            <div style="display: grid; gap: 18px;">
+              <div>
+                <label for="rp-pw" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 8px;">New password</label>
+                <div style="position: relative;">
+                  <input id="rp-pw" type="{{ pwType }}" value="{{ password }}" onChange="{{ setPassword }}" placeholder="At least 8 characters" autoComplete="new-password" style="width: 100%; min-height: 48px; padding: 12px 76px 12px 16px; border-radius: 12px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 15px; color: #1A233D;">
+                  <button type="button" onClick="{{ togglePw }}" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; font-size: 12.5px; font-weight: 600; color: #656A76; cursor: pointer;" style-hover="background: #F5F3ED">{{ pwToggleLabel }}</button>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-top: 10px;">
+                  <div style="height: 3px; border-radius: 999px; background: {{ str1 }};"></div>
+                  <div style="height: 3px; border-radius: 999px; background: {{ str2 }};"></div>
+                  <div style="height: 3px; border-radius: 999px; background: {{ str3 }};"></div>
+                </div>
+                <div style="font-size: 12.5px; color: #656A76; margin-top: 8px; line-height: 1.5;">{{ strengthLabel }}</div>
+              </div>
+              <div>
+                <label for="rp-pw2" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 8px;">Confirm new password</label>
+                <input id="rp-pw2" type="{{ pwType }}" value="{{ confirm }}" onChange="{{ setConfirm }}" placeholder="Re-enter your password" autoComplete="new-password" style="width: 100%; min-height: 48px; padding: 12px 16px; border-radius: 12px; border: 1px solid; border-color: {{ confirmBorder }}; background: #FFFFFF; font-size: 15px; color: #1A233D;">
+                <div style="font-size: 12.5px; color: {{ confirmColor }}; margin-top: 8px; line-height: 1.5;">{{ confirmHint }}</div>
+              </div>
+              <button type="button" onClick="{{ submitReset }}" disabled="{{ resetDisabled }}" style="min-height: 50px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer; opacity: {{ resetOpacity }};" style-hover="background: #263455">Save and sign in</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ── DONE ─────────────────────────────── -->
+        <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+          <div style="animation: fadeUp 320ms ease both;">
+            <div style="width: 52px; height: 52px; border-radius: 999px; background: oklch(0.55 0.13 155 / 0.12); display: grid; place-items: center; margin-bottom: 24px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="oklch(0.48 0.12 155)" stroke-width="2.2" stroke-linecap="round"><path d="M5 12.8l4.4 4.4L19 7.6"></path></svg>
+            </div>
+            <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(28px, 4vw, 34px); line-height: 1.15; margin: 0 0 10px;">{{ doneTitle }}</h1>
+            <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0 0 28px; max-width: 40ch; text-wrap: pretty;">{{ doneBody }}</p>
+            <div style="display: grid; gap: 10px;">
+              <button type="button" style="min-height: 50px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer;" style-hover="background: #263455">{{ doneCta }}</button>
+              <button type="button" onClick="{{ goSignin }}" style="min-height: 48px; border-radius: 10px; border: 1px solid rgba(26,35,61,.20); background: transparent; font-size: 14px; font-weight: 600; color: #1A233D; cursor: pointer;" style-hover="background: #F5F3ED">Back to sign in</button>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+
+    <div style="background: #1A233D; color: #FFFFFF; padding: clamp(24px, 4vw, 56px); display: flex; flex-direction: column; justify-content: space-between; gap: clamp(24px, 4vw, 40px);">
+      <div style="font-family: Lora, Georgia, serif; font-weight: 600; font-size: 20px; letter-spacing: .01em;">AXP</div>
+      <div>
+        <div style="height: clamp(96px, 22vw, 200px); border-radius: 16px; background: linear-gradient(160deg, rgba(212,160,42,.22), rgba(255,255,255,.05)); border: 1px solid rgba(255,255,255,.14); margin-bottom: clamp(18px, 3vw, 28px); display: grid; place-items: center;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: rgba(255,255,255,.45);">Brand imagery</div>
+        </div>
+        <h2 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(21px, 2.6vw, 32px); line-height: 1.24; margin: 0 0 12px; max-width: 22ch;">A mortgage process that tells you where you stand.</h2>
+        <p style="font-size: 14.5px; line-height: 1.7; color: rgba(255,255,255,.62); margin: 0; max-width: 40ch; text-wrap: pretty;">Apply, upload your documents once, and track every review step from one place.</p>
+      </div>
+      <div style="font-size: 12px; color: rgba(255,255,255,.42); line-height: 1.6; padding-right: 120px;">AXP Mortgage Services · Lagos, Nigeria</div>
+    </div>
+  </div>
+
+  <!-- ── PROTOTYPE SWITCHER ─────────────────── -->
+  <sc-if value="{{ showSwitcher }}" hint-placeholder-val="{{ true }}">
+    <div style="position: fixed; right: 12px; bottom: 12px; z-index: 40; display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+      <sc-if value="{{ switcherOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 6px; background: #0E172C; color: #FFFFFF; padding: 12px; border-radius: 12px; box-shadow: 0 30px 80px rgba(4,10,25,.28); min-width: 152px;">
+          <button type="button" onClick="{{ goSignin }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Sign in</button>
+          <button type="button" onClick="{{ goSignup }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Sign up</button>
+          <button type="button" onClick="{{ goOtp }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Email code</button>
+          <button type="button" onClick="{{ goForgot }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Forgot password</button>
+          <button type="button" onClick="{{ goReset }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Reset password</button>
+          <button type="button" onClick="{{ showSigninError }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Sign-in error</button>
+        </div>
+      </sc-if>
+      <button type="button" onClick="{{ toggleSwitcher }}" style="background: #0E172C; border: 0; color: #FFFFFF; font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; padding: 9px 12px; border-radius: 999px; cursor: pointer; box-shadow: 0 12px 30px rgba(4,10,25,.24); opacity: .9;">{{ switcherLabel }}</button>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;signin&quot;,&quot;signup&quot;,&quot;otp&quot;,&quot;forgot&quot;,&quot;reset&quot;,&quot;done&quot;],&quot;default&quot;:&quot;signin&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;showSwitcher&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      screen: props.startScreen || 'signin',
+      firstName: '', lastName: '', email: '', password: '', confirm: '',
+      otp: ['', '', '', '', '', ''],
+      showPw: false, remember: true, terms: false,
+      signinError: false, otpError: false,
+      countdown: 0, doneKind: 'signup', switcherOpen: false
+    };
+    this.otpRefs = [0, 1, 2, 3, 4, 5].map(() => React.createRef());
+  }
+
+  componentWillUnmount() { clearInterval(this.timer); }
+
+  startCountdown() {
+    clearInterval(this.timer);
+    this.setState({ countdown: 45 });
+    this.timer = setInterval(() => {
+      this.setState(s => {
+        if (s.countdown <= 1) { clearInterval(this.timer); return { countdown: 0 }; }
+        return { countdown: s.countdown - 1 };
+      });
+    }, 1000);
+  }
+
+  setOtp(i) {
+    return e => {
+      const v = e.target.value.replace(/\D/g, '').slice(-1);
+      this.setState(s => {
+        const otp = s.otp.slice();
+        otp[i] = v;
+        return { otp, otpError: false };
+      }, () => {
+        if (v && i < 5 && this.otpRefs[i + 1].current) this.otpRefs[i + 1].current.focus();
+      });
+    };
+  }
+
+  strength(pw) {
+    let n = 0;
+    if (pw.length >= 8) n++;
+    if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) n++;
+    if (/[\d\W]/.test(pw)) n++;
+    return pw.length === 0 ? 0 : Math.max(1, n);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(s.email.trim());
+    const pwScore = this.strength(s.password);
+    const strong = s.password.length >= 8 && pwScore >= 2;
+    const otpFull = s.otp.every(d => d !== '');
+    const match = s.confirm.length > 0 && s.confirm === s.password;
+    const strengthColors = ['rgba(26,35,61,.12)', 'oklch(0.58 0.18 28)', 'oklch(0.68 0.15 70)', 'oklch(0.55 0.13 155)'];
+    const bar = i => (pwScore >= i ? strengthColors[pwScore] : 'rgba(26,35,61,.12)');
+    const done = {
+      signup: ['Your account is ready', "You're signed in as " + (s.email.trim() || 'your new account') + '. Next we\u2019ll verify your identity with three documents \u2014 it takes about five minutes.', 'Start identity verification'],
+      reset: ['Password updated', 'You\u2019re signed in with your new password. We signed out any other devices as a precaution.', 'Continue to my application']
+    }[s.doneKind];
+
+    return {
+      isSignin: s.screen === 'signin',
+      isSignup: s.screen === 'signup',
+      isOtp: s.screen === 'otp',
+      isForgot: s.screen === 'forgot',
+      isReset: s.screen === 'reset',
+      isDone: s.screen === 'done',
+      showSwitcher: this.props.showSwitcher !== false,
+      switcherOpen: s.switcherOpen,
+      switcherLabel: s.switcherOpen ? 'Close' : 'Screens',
+      toggleSwitcher: () => this.setState(st => ({ switcherOpen: !st.switcherOpen })),
+
+      firstName: s.firstName, lastName: s.lastName, email: s.email,
+      password: s.password, confirm: s.confirm,
+      emailDisplay: s.email.trim() || 'your email',
+      setFirstName: e => this.setState({ firstName: e.target.value }),
+      setLastName: e => this.setState({ lastName: e.target.value }),
+      setEmail: e => this.setState({ email: e.target.value, signinError: false }),
+      setPassword: e => this.setState({ password: e.target.value, signinError: false }),
+      setConfirm: e => this.setState({ confirm: e.target.value }),
+
+      pwType: s.showPw ? 'text' : 'password',
+      pwToggleLabel: s.showPw ? 'Hide' : 'Show',
+      togglePw: () => this.setState(st => ({ showPw: !st.showPw })),
+
+      emailBorder: s.email.length > 3 && !emailOk ? 'oklch(0.58 0.18 28 / 0.55)' : 'rgba(26,35,61,.18)',
+      emailHintColor: s.email.length > 3 && !emailOk ? 'oklch(0.52 0.17 28)' : '#656A76',
+      emailHint: s.email.length > 3 && !emailOk ? 'That doesn\u2019t look like a valid email address.' : 'We\u2019ll send your verification code here.',
+
+      str1: bar(1), str2: bar(2), str3: bar(3),
+      strengthLabel: ['Use 8 or more characters with a mix of letters and numbers.', 'Weak \u2014 add length and a number or symbol.', 'Fair \u2014 add a number or symbol to strengthen it.', 'Strong password.'][pwScore],
+
+      remember: s.remember,
+      toggleRemember: e => this.setState({ remember: e.target.checked }),
+      terms: s.terms,
+      toggleTerms: e => this.setState({ terms: e.target.checked }),
+
+      signinError: s.signinError,
+      signinDisabled: !(emailOk && s.password.length > 0),
+      signinOpacity: emailOk && s.password.length > 0 ? 1 : 0.45,
+      submitSignin: () => {
+        if (!(emailOk && s.password.length > 0)) return;
+        if (s.password.toLowerCase() === 'wrong') this.setState({ signinError: true });
+        else this.setState({ screen: 'done', doneKind: 'reset' });
+      },
+
+      signupDisabled: !(s.firstName.trim() && s.lastName.trim() && emailOk && strong && s.terms),
+      signupOpacity: s.firstName.trim() && s.lastName.trim() && emailOk && strong && s.terms ? 1 : 0.45,
+      submitSignup: () => {
+        if (!(s.firstName.trim() && s.lastName.trim() && emailOk && strong && s.terms)) return;
+        this.setState({ screen: 'otp', otp: ['', '', '', '', '', ''], otpError: false });
+        this.startCountdown();
+      },
+
+      o0: s.otp[0], o1: s.otp[1], o2: s.otp[2], o3: s.otp[3], o4: s.otp[4], o5: s.otp[5],
+      setO0: this.setOtp(0), setO1: this.setOtp(1), setO2: this.setOtp(2),
+      setO3: this.setOtp(3), setO4: this.setOtp(4), setO5: this.setOtp(5),
+      ref0: this.otpRefs[0], ref1: this.otpRefs[1], ref2: this.otpRefs[2],
+      ref3: this.otpRefs[3], ref4: this.otpRefs[4], ref5: this.otpRefs[5],
+      otpBorder: s.otpError ? 'oklch(0.58 0.18 28 / 0.55)' : 'rgba(26,35,61,.18)',
+      otpError: s.otpError,
+      otpDisabled: !otpFull,
+      otpOpacity: otpFull ? 1 : 0.45,
+      submitOtp: () => {
+        if (!otpFull) return;
+        if (s.otp.join('') === '000000') this.setState({ otpError: true });
+        else if (s.doneKind === 'reset') this.setState({ screen: 'reset', password: '', confirm: '' });
+        else this.setState({ screen: 'done', doneKind: 'signup' });
+      },
+      countdown: s.countdown,
+      counting: s.countdown > 0,
+      canResend: s.countdown === 0,
+      resend: () => { this.setState({ otp: ['', '', '', '', '', ''], otpError: false }); this.startCountdown(); },
+
+      forgotDisabled: !emailOk,
+      forgotOpacity: emailOk ? 1 : 0.45,
+      submitForgot: () => {
+        if (!emailOk) return;
+        this.setState({ screen: 'otp', doneKind: 'reset', otp: ['', '', '', '', '', ''], otpError: false });
+        this.startCountdown();
+      },
+
+      confirmBorder: s.confirm.length > 0 && !match ? 'oklch(0.58 0.18 28 / 0.55)' : 'rgba(26,35,61,.18)',
+      confirmColor: s.confirm.length > 0 && !match ? 'oklch(0.52 0.17 28)' : '#656A76',
+      confirmHint: s.confirm.length === 0 ? 'Type it once more to be sure.' : match ? 'Passwords match.' : 'Passwords don\u2019t match yet.',
+      resetDisabled: !(strong && match),
+      resetOpacity: strong && match ? 1 : 0.45,
+      submitReset: () => { if (strong && match) this.setState({ screen: 'done', doneKind: 'reset' }); },
+
+      doneTitle: done[0], doneBody: done[1], doneCta: done[2],
+
+      goSignin: () => this.setState({ screen: 'signin', signinError: false, password: '' }),
+      goSignup: () => this.setState({ screen: 'signup', doneKind: 'signup' }),
+      goOtp: () => { this.setState({ screen: 'otp', otpError: false }); this.startCountdown(); },
+      goForgot: () => this.setState({ screen: 'forgot', doneKind: 'reset' }),
+      goReset: () => this.setState({ screen: 'reset', doneKind: 'reset', password: '', confirm: '' }),
+      showSigninError: () => this.setState({ screen: 'signin', email: s.email || 'adaeze@example.com', password: 'wrong', signinError: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

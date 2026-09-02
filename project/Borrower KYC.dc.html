@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: oklch(0.977 0.008 90); -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #1A233D; text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { color: #263455; }
+  input, button, textarea { font: inherit; }
+  input[type="file"] { display: none; }
+  input:focus-visible, button:focus-visible { outline: 2px solid #D4A02A; outline-offset: 2px; }
+  @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(26,35,61,.14); } 70% { box-shadow: 0 0 0 12px rgba(26,35,61,0); } 100% { box-shadow: 0 0 0 0 rgba(26,35,61,0); } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: oklch(0.977 0.008 90); font-family: Poppins, system-ui, sans-serif; color: #1A233D; padding-bottom: 132px;">
+
+  <div style="position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(26,35,61,.10);">
+    <div style="max-width: 680px; margin: 0 auto; padding: 14px clamp(16px, 4vw, 24px); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+      <div style="font-family: Lora, Georgia, serif; font-weight: 600; font-size: 19px; letter-spacing: .01em;">AXP</div>
+      <button type="button" style="background: none; border: 0; padding: 10px 0; font-size: 13px; font-weight: 500; color: #656A76; cursor: pointer;">Save &amp; exit</button>
+    </div>
+  </div>
+
+  <div style="max-width: 680px; margin: 0 auto; padding: clamp(20px, 5vw, 36px) clamp(16px, 4vw, 24px) 0;">
+
+    <sc-if value="{{ isFlow }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-bottom: 28px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76;">Step {{ step }} of 3</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76;">{{ stepName }}</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+          <div style="height: 4px; border-radius: 999px; background: {{ seg1 }};"></div>
+          <div style="height: 4px; border-radius: 999px; background: {{ seg2 }};"></div>
+          <div style="height: 4px; border-radius: 999px; background: {{ seg3 }};"></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ── STEP 1 ─────────────────────────────── -->
+    <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(26px, 6.4vw, 34px); line-height: 1.15; margin: 0 0 10px;">Identity document</h1>
+        <p style="font-size: clamp(15px, 3.6vw, 16px); line-height: 1.65; color: #656A76; margin: 0 0 32px; max-width: 46ch; text-wrap: pretty;">Upload one government-issued ID. It must be valid, unexpired, and fully visible in the frame.</p>
+
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 10px;">ID type</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 32px;">
+          <button type="button" onClick="{{ pickTypePassport }}" style="min-height: 48px; padding: 12px 14px; border-radius: 10px; border: 1px solid; text-align: left; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 160ms ease; background: {{ t1bg }}; color: {{ t1fg }}; border-color: {{ t1bd }};">International Passport</button>
+          <button type="button" onClick="{{ pickTypeLicence }}" style="min-height: 48px; padding: 12px 14px; border-radius: 10px; border: 1px solid; text-align: left; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 160ms ease; background: {{ t2bg }}; color: {{ t2fg }}; border-color: {{ t2bd }};">Driver's Licence</button>
+          <button type="button" onClick="{{ pickTypeNin }}" style="min-height: 48px; padding: 12px 14px; border-radius: 10px; border: 1px solid; text-align: left; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 160ms ease; background: {{ t3bg }}; color: {{ t3fg }}; border-color: {{ t3bd }};">National ID (NIN)</button>
+        </div>
+
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 10px;">Document</div>
+        <input type="file" ref="{{ refIdentity }}" accept="image/*,application/pdf" onChange="{{ takeIdentity }}">
+        <sc-if value="{{ noIdentity }}" hint-placeholder-val="{{ true }}">
+          <div onClick="{{ openIdentity }}" onDragOver="{{ allowDrop }}" onDrop="{{ dropIdentity }}" style="border: 1.5px dashed rgba(26,35,61,.22); border-radius: 16px; background: #FFFFFF; padding: 40px 24px; text-align: center; cursor: pointer; transition: border-color 180ms ease, background 180ms ease;" style-hover="border-color: rgba(26,35,61,.45)">
+            <div style="width: 48px; height: 48px; border-radius: 999px; background: #F5F3ED; margin: 0 auto 16px; display: grid; place-items: center;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#1A233D" stroke-width="1.6" stroke-linecap="round"><path d="M10 14V4"></path><path d="M5.5 8.5 10 4l4.5 4.5"></path><path d="M3.5 16.5h13"></path></svg>
+            </div>
+            <div style="font-size: 15px; font-weight: 600; margin-bottom: 6px;">Take a photo or choose a file</div>
+            <div style="font-size: 12.5px; line-height: 1.6; color: #656A76;">JPG, PNG or PDF · up to 10&nbsp;MB<br>Flat surface, no glare, all four corners in frame</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasIdentity }}" hint-placeholder-val="{{ false }}">
+          <div style="background: #FFFFFF; border: 1px solid rgba(26,35,61,.10); border-radius: 16px; box-shadow: 0 2px 8px rgba(26,35,61,.05); padding: 16px; display: flex; gap: 16px; align-items: center;">
+            <div style="width: 60px; height: 76px; border-radius: 10px; background: #F5F3ED; overflow: hidden; flex: none; display: grid; place-items: center;">
+              <div style="width: 100%; height: 100%; background-size: cover; background-position: center; background-image: {{ identityBg }};"></div>
+            </div>
+            <div style="min-width: 0; flex: 1;">
+              <div style="font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ identityName }}</div>
+              <div style="font-size: 12.5px; color: #656A76; margin-top: 3px;">{{ identitySize }} · uploaded</div>
+              <div style="display: flex; gap: 16px; margin-top: 10px;">
+                <button type="button" onClick="{{ openIdentity }}" style="background: none; border: 0; padding: 4px 0; font-size: 13px; font-weight: 600; color: #1A233D; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">Replace</button>
+                <button type="button" onClick="{{ clearIdentity }}" style="background: none; border: 0; padding: 4px 0; font-size: 13px; font-weight: 500; color: #656A76; cursor: pointer;">Remove</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="margin-top: 32px;">
+          <label for="idnum" style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #656A76; margin-bottom: 10px;">{{ idNumberLabel }}</label>
+          <input id="idnum" type="text" value="{{ idNumber }}" onChange="{{ setIdNumber }}" placeholder="{{ idNumberHint }}" style="width: 100%; min-height: 48px; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(26,35,61,.18); background: #FFFFFF; font-size: 15px; color: #1A233D;">
+          <div style="font-size: 12.5px; color: #656A76; margin-top: 8px;">Enter it exactly as printed on the document.</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ── STEP 2 ─────────────────────────────── -->
+    <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(26px, 6.4vw, 34px); line-height: 1.15; margin: 0 0 10px;">Supporting documents</h1>
+        <p style="font-size: clamp(15px, 3.6vw, 16px); line-height: 1.65; color: #656A76; margin: 0 0 32px; max-width: 46ch; text-wrap: pretty;">Two more documents confirm where you work and where you live.</p>
+
+        <div style="display: grid; gap: 24px;">
+          <div>
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px;">
+              <div style="font-size: 16px; font-weight: 600;">Work or staff ID</div>
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #656A76;">Required</div>
+            </div>
+            <p style="font-size: 13px; line-height: 1.6; color: #656A76; margin: 0 0 12px;">Employer-issued ID card, or a signed letter of employment on company letterhead. JPG, PNG or PDF.</p>
+            <input type="file" ref="{{ refWork }}" accept="image/*,application/pdf" onChange="{{ takeWork }}">
+            <sc-if value="{{ noWork }}" hint-placeholder-val="{{ true }}">
+              <div onClick="{{ openWork }}" onDragOver="{{ allowDrop }}" onDrop="{{ dropWork }}" style="border: 1.5px dashed rgba(26,35,61,.22); border-radius: 16px; background: #FFFFFF; padding: 32px 24px; text-align: center; cursor: pointer;" style-hover="border-color: rgba(26,35,61,.45)">
+                <div style="width: 44px; height: 44px; border-radius: 999px; background: #F5F3ED; margin: 0 auto 14px; display: grid; place-items: center;">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#1A233D" stroke-width="1.6" stroke-linecap="round"><path d="M10 14V4"></path><path d="M5.5 8.5 10 4l4.5 4.5"></path><path d="M3.5 16.5h13"></path></svg>
+                </div>
+                <div style="font-size: 14.5px; font-weight: 600;">Upload work or staff ID</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasWork }}" hint-placeholder-val="{{ false }}">
+              <div style="background: #FFFFFF; border: 1px solid rgba(26,35,61,.10); border-radius: 16px; box-shadow: 0 2px 8px rgba(26,35,61,.05); padding: 16px; display: flex; gap: 16px; align-items: center;">
+                <div style="width: 60px; height: 76px; border-radius: 10px; background: #F5F3ED; overflow: hidden; flex: none;">
+                  <div style="width: 100%; height: 100%; background-size: cover; background-position: center; background-image: {{ workBg }};"></div>
+                </div>
+                <div style="min-width: 0; flex: 1;">
+                  <div style="font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ workName }}</div>
+                  <div style="font-size: 12.5px; color: #656A76; margin-top: 3px;">{{ workSize }} · uploaded</div>
+                  <div style="display: flex; gap: 16px; margin-top: 10px;">
+                    <button type="button" onClick="{{ openWork }}" style="background: none; border: 0; padding: 4px 0; font-size: 13px; font-weight: 600; color: #1A233D; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">Replace</button>
+                    <button type="button" onClick="{{ clearWork }}" style="background: none; border: 0; padding: 4px 0; font-size: 13px; font-weight: 500; color: #656A76; cursor: pointer;">Remove</button>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div>
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px;">
+              <div style="font-size: 16px; font-weight: 600;">Proof of address</div>
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #656A76;">Required</div>
+            </div>
+            <p style="font-size: 13px; line-height: 1.6; color: #656A76; margin: 0 0 12px;">Utility bill, bank statement or tenancy agreement issued in the last 3 months, showing your name and address.</p>
+            <input type="file" ref="{{ refAddress }}" accept="image/*,application/pdf" onChange="{{ takeAddress }}">
+            <sc-if value="{{ noAddress }}" hint-placeholder-val="{{ true }}">
+              <div onClick="{{ openAddress }}" onDragOver="{{ allowDrop }}" onDrop="{{ dropAddress }}" style="border: 1.5px dashed rgba(26,35,61,.22); border-radius: 16px; background: #FFFFFF; padding: 32px 24px; text-align: center; cursor: pointer;" style-hover="border-color: rgba(26,35,61,.45)">
+                <div style="width: 44px; height: 44px; border-radius: 999px; background: #F5F3ED; margin: 0 auto 14px; display: grid; place-items: center;">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#1A233D" stroke-width="1.6" stroke-linecap="round"><path d="M10 14V4"></path><path d="M5.5 8.5 10 4l4.5 4.5"></path><path d="M3.5 16.5h13"></path></svg>
+                </div>
+                <div style="font-size: 14.5px; font-weight: 600;">Upload proof of address</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasAddress }}" hint-placeholder-val="{{ false }}">
+              <div style="background: #FFFFFF; border: 1px solid rgba(26,35,61,.10); border-radius: 16px; box-shadow: 0 2px 8px rgba(26,35,61,.05); padding: 16px; display: flex; gap: 16px; align-items: center;">
+                <div style="width: 60px; height: 76px; border-radius: 10px; background: #F5F3ED; overflow: hidden; flex: none;">
+                  <div style="width: 100%; height: 100%; background-size: cover; background-position: center; background-image: {{ addressBg }};"></div>
+                </div>
+                <div style="min-width: 0; flex: 1;">
+                  <div style="font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ addressName }}</div>
+                  <div style="font-size: 12.5px; color: #656A76; margin-top: 3px;">{{ addressSize }} · uploaded</div>
+                  <div style="display: flex; gap: 16px; margin-top: 10px;">
+                    <button type="button" onClick="{{ openAddress }}" style="background: none; border: 0; padding: 4px 0; font-size: 13px; font-weight: 600; color: #1A233D; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;">Replace</button>
+                    <button type="button" onClick="{{ clearAddress }}" style="background: none; border: 0; padding: 4px 0; font-size: 13px; font-weight: 500; color: #656A76; cursor: pointer;">Remove</button>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ── STEP 3 ─────────────────────────────── -->
+    <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(26px, 6.4vw, 34px); line-height: 1.15; margin: 0 0 10px;">Review &amp; submit</h1>
+        <p style="font-size: clamp(15px, 3.6vw, 16px); line-height: 1.65; color: #656A76; margin: 0 0 32px; max-width: 46ch; text-wrap: pretty;">Check each document is readable before you submit. Corrections after review take longer.</p>
+
+        <div style="display: grid; gap: 12px;">
+          <sc-for list="{{ summary }}" as="doc" hint-placeholder-count="3">
+            <div style="background: #FFFFFF; border: 1px solid rgba(26,35,61,.10); border-radius: 16px; box-shadow: 0 2px 8px rgba(26,35,61,.05); padding: 16px; display: flex; gap: 16px; align-items: center;">
+              <div style="width: 56px; height: 70px; border-radius: 10px; background: #F5F3ED; overflow: hidden; flex: none;">
+                <div style="width: 100%; height: 100%; background-size: cover; background-position: center; background-image: {{ doc.bg }};"></div>
+              </div>
+              <div style="min-width: 0; flex: 1;">
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #656A76; margin-bottom: 4px;">{{ doc.label }}</div>
+                <div style="font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ doc.name }}</div>
+                <div style="font-size: 12.5px; color: #656A76; margin-top: 3px;">{{ doc.meta }}</div>
+              </div>
+              <button type="button" onClick="{{ doc.onEdit }}" aria-label="Edit" style="width: 44px; height: 44px; flex: none; border-radius: 10px; border: 1px solid rgba(26,35,61,.14); background: #FFFFFF; display: grid; place-items: center; cursor: pointer;" style-hover="background: #F5F3ED">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#1A233D" stroke-width="1.5" stroke-linecap="round"><path d="M14.2 3.3l2.5 2.5-9 9L4 16l1.2-3.7z"></path><path d="M12.6 4.9l2.5 2.5"></path></svg>
+              </button>
+            </div>
+          </sc-for>
+        </div>
+
+        <label style="display: flex; gap: 12px; align-items: flex-start; margin-top: 28px; padding: 16px; border: 1px solid rgba(26,35,61,.10); border-radius: 12px; background: #F5F3ED; cursor: pointer;">
+          <input type="checkbox" checked="{{ consent }}" onChange="{{ toggleConsent }}" style="width: 20px; height: 20px; margin: 2px 0 0; accent-color: #1A233D; flex: none;">
+          <span style="font-size: 13.5px; line-height: 1.6; color: #1A233D;">I confirm these documents are genuine and belong to me, and I authorise AXP to verify them with the issuing authorities and its KYC partners.</span>
+        </label>
+      </div>
+    </sc-if>
+
+    <!-- ── STATUS: PENDING ────────────────────── -->
+    <sc-if value="{{ isPending }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="background: #FFFFFF; border: 1px solid rgba(26,35,61,.10); border-top: 3px solid #1A233D; border-radius: 16px; box-shadow: 0 2px 8px rgba(26,35,61,.05); padding: clamp(20px, 5vw, 28px);">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; border: 1px solid rgba(26,35,61,.18); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: #1A233D;">
+            <span style="width: 8px; height: 8px; border-radius: 999px; background: #1A233D; animation: pulseRing 2s ease-out infinite;"></span>Under review
+          </div>
+          <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(24px, 5.8vw, 30px); line-height: 1.18; margin: 18px 0 10px;">We're reviewing your documents</h1>
+          <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0; max-width: 44ch; text-wrap: pretty;">Nothing more is needed from you. We'll notify you by SMS and email within 1–2 business days.</p>
+          <div style="display: grid; gap: 1px; background: rgba(26,35,61,.10); border-radius: 12px; overflow: hidden; margin-top: 24px;">
+            <div style="background: #FFFFFF; padding: 14px 16px; display: flex; justify-content: space-between; gap: 16px; font-size: 13.5px;"><span style="color: #656A76;">Submitted</span><span style="font-weight: 500;">2 Sep 2026, 10:24</span></div>
+            <div style="background: #FFFFFF; padding: 14px 16px; display: flex; justify-content: space-between; gap: 16px; font-size: 13.5px;"><span style="color: #656A76;">Documents</span><span style="font-weight: 500;">3 of 3 received</span></div>
+            <div style="background: #FFFFFF; padding: 14px 16px; display: flex; justify-content: space-between; gap: 16px; font-size: 13.5px;"><span style="color: #656A76;">Reference</span><span style="font-weight: 500; font-variant-numeric: tabular-nums;">AXP-KYC-48213</span></div>
+          </div>
+        </div>
+        <button type="button" onClick="{{ goReview }}" style="width: 100%; min-height: 48px; margin-top: 12px; border-radius: 10px; border: 1px solid rgba(26,35,61,.22); background: transparent; font-size: 14px; font-weight: 600; color: #1A233D; cursor: pointer;" style-hover="background: #F5F3ED">View submitted documents</button>
+      </div>
+    </sc-if>
+
+    <!-- ── STATUS: NEEDS CORRECTION ───────────── -->
+    <sc-if value="{{ isCorrection }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="background: #FFFFFF; border: 1px solid rgba(26,35,61,.10); border-top: 3px solid oklch(0.68 0.15 70); border-radius: 16px; box-shadow: 0 2px 8px rgba(26,35,61,.05); padding: clamp(20px, 5vw, 28px);">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: oklch(0.68 0.15 70 / 0.12); border: 1px solid oklch(0.68 0.15 70 / 0.35); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: oklch(0.48 0.12 70);">
+            <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.68 0.15 70);"></span>Needs correction
+          </div>
+          <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(24px, 5.8vw, 30px); line-height: 1.18; margin: 18px 0 10px;">One document needs attention</h1>
+          <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0 0 24px; max-width: 44ch; text-wrap: pretty;">Your identity and work documents were accepted. Re-upload the flagged document to continue.</p>
+
+          <div style="border: 1px solid oklch(0.68 0.15 70 / 0.35); border-radius: 12px; overflow: hidden;">
+            <div style="padding: 16px; display: flex; gap: 14px; align-items: center; border-bottom: 1px solid oklch(0.68 0.15 70 / 0.25);">
+              <div style="width: 48px; height: 60px; border-radius: 8px; background: #F5F3ED; flex: none;"></div>
+              <div style="min-width: 0;">
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: oklch(0.48 0.12 70); margin-bottom: 4px;">Flagged</div>
+                <div style="font-size: 14.5px; font-weight: 600;">Proof of address</div>
+                <div style="font-size: 12.5px; color: #656A76; margin-top: 2px;">ikeja-utility-bill.pdf</div>
+              </div>
+            </div>
+            <div style="padding: 16px; background: oklch(0.68 0.15 70 / 0.07);">
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #656A76; margin-bottom: 8px;">Reviewer note</div>
+              <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px; text-wrap: pretty;">The utility bill provided is dated March 2026, outside the 3-month window. Please upload a bill issued in July or later, with your full name visible.</p>
+              <div style="font-size: 12px; color: #656A76;">A. Okonkwo · Compliance · 2 Sep 2026</div>
+            </div>
+          </div>
+        </div>
+        <button type="button" onClick="{{ goFixAddress }}" style="width: 100%; min-height: 48px; margin-top: 12px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer;" style-hover="background: #263455">Re-upload proof of address</button>
+      </div>
+    </sc-if>
+
+    <!-- ── STATUS: APPROVED ───────────────────── -->
+    <sc-if value="{{ isApproved }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="background: #FFFFFF; border: 1px solid rgba(26,35,61,.10); border-top: 3px solid oklch(0.55 0.13 155); border-radius: 16px; box-shadow: 0 2px 8px rgba(26,35,61,.05); padding: clamp(20px, 5vw, 28px);">
+          <div style="width: 48px; height: 48px; border-radius: 999px; background: oklch(0.55 0.13 155 / 0.12); display: grid; place-items: center; margin-bottom: 20px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="oklch(0.48 0.12 155)" stroke-width="2.2" stroke-linecap="round"><path d="M5 12.8l4.4 4.4L19 7.6"></path></svg>
+          </div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: oklch(0.55 0.13 155 / 0.12); border: 1px solid oklch(0.55 0.13 155 / 0.32); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: oklch(0.44 0.11 155);">Verified</div>
+          <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(24px, 5.8vw, 30px); line-height: 1.18; margin: 18px 0 10px;">Your identity is verified</h1>
+          <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0; max-width: 44ch; text-wrap: pretty;">All three documents were approved on 2 Sep 2026. Your application moves on to affordability assessment.</p>
+        </div>
+        <button type="button" style="width: 100%; min-height: 48px; margin-top: 12px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer;" style-hover="background: #263455">Continue to next step</button>
+      </div>
+    </sc-if>
+
+    <!-- ── STATUS: REJECTED ───────────────────── -->
+    <sc-if value="{{ isRejected }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="background: #FFFFFF; border: 1px solid rgba(26,35,61,.10); border-top: 3px solid oklch(0.58 0.18 28); border-radius: 16px; box-shadow: 0 2px 8px rgba(26,35,61,.05); padding: clamp(20px, 5vw, 28px);">
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: oklch(0.58 0.18 28 / 0.10); border: 1px solid oklch(0.58 0.18 28 / 0.32); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: oklch(0.52 0.17 28);">
+            <span style="width: 8px; height: 8px; border-radius: 999px; background: oklch(0.58 0.18 28);"></span>Not approved
+          </div>
+          <h1 style="font-family: Lora, Georgia, serif; font-weight: 500; font-size: clamp(24px, 5.8vw, 30px); line-height: 1.18; margin: 18px 0 10px;">We couldn't verify your identity</h1>
+          <p style="font-size: 15px; line-height: 1.65; color: #656A76; margin: 0 0 24px; max-width: 44ch; text-wrap: pretty;">Your submission was closed on 2 Sep 2026. Our compliance team can reopen it once the mismatch is resolved.</p>
+          <div style="border: 1px solid rgba(26,35,61,.12); border-radius: 12px; padding: 16px; background: #F5F3ED;">
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #656A76; margin-bottom: 8px;">Reason</div>
+            <p style="font-size: 14px; line-height: 1.65; margin: 0 0 10px; text-wrap: pretty;">The name on the National ID does not match the name on this application, and the document could not be confirmed with NIMC.</p>
+            <div style="font-size: 12px; color: #656A76;">Reference AXP-KYC-48213</div>
+          </div>
+        </div>
+        <div style="display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 12px;">
+          <button type="button" style="min-height: 48px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer;" style-hover="background: #263455">Contact support</button>
+          <button type="button" onClick="{{ restart }}" style="min-height: 48px; border-radius: 10px; border: 1px solid rgba(26,35,61,.22); background: transparent; font-size: 14px; font-weight: 600; color: #1A233D; cursor: pointer;" style-hover="background: #F5F3ED">Start a new submission</button>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <!-- ── STICKY CTA ──────────────────────────── -->
+  <sc-if value="{{ isFlow }}" hint-placeholder-val="{{ true }}">
+    <div style="position: fixed; left: 0; right: 0; bottom: 0; z-index: 15; background: rgba(255,255,255,.94); backdrop-filter: blur(10px); border-top: 1px solid rgba(26,35,61,.10);">
+      <div style="max-width: 680px; margin: 0 auto; padding: 12px clamp(16px, 4vw, 24px) 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <sc-if value="{{ canGoBack }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ back }}" style="min-height: 48px; padding: 0 20px; border-radius: 10px; border: 1px solid rgba(26,35,61,.22); background: transparent; font-size: 14px; font-weight: 600; color: #1A233D; cursor: pointer;" style-hover="background: #F5F3ED">Back</button>
+        </sc-if>
+        <button type="button" onClick="{{ next }}" disabled="{{ ctaDisabled }}" style="flex: 1 1 200px; min-height: 48px; padding: 0 24px; border-radius: 10px; border: 0; background: #1A233D; font-size: 15px; font-weight: 600; color: #FFFFFF; cursor: pointer; transition: opacity 150ms ease; opacity: {{ ctaOpacity }};" style-hover="background: #263455">{{ ctaLabel }}</button>
+      </div>
+      <div style="max-width: 680px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 24px) 14px; font-size: 12px; color: #656A76;">{{ ctaHelp }}</div>
+    </div>
+  </sc-if>
+
+  <!-- ── PROTOTYPE STATE SWITCHER ────────────── -->
+  <sc-if value="{{ showSwitcher }}" hint-placeholder-val="{{ true }}">
+    <div style="position: fixed; left: 12px; bottom: 112px; z-index: 40; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
+      <sc-if value="{{ switcherOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 6px; background: #0E172C; color: #FFFFFF; padding: 12px; border-radius: 12px; box-shadow: 0 30px 80px rgba(4,10,25,.28); min-width: 148px;">
+          <button type="button" onClick="{{ restart }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Upload flow</button>
+          <button type="button" onClick="{{ showPending }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Pending</button>
+          <button type="button" onClick="{{ showCorrection }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Needs correction</button>
+          <button type="button" onClick="{{ showApproved }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Approved</button>
+          <button type="button" onClick="{{ showRejected }}" style="background: rgba(255,255,255,.08); border: 0; color: #FFFFFF; font-size: 11.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; text-align: left;">Rejected</button>
+        </div>
+      </sc-if>
+      <button type="button" onClick="{{ toggleSwitcher }}" style="background: #0E172C; border: 0; color: #FFFFFF; font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; padding: 9px 12px; border-radius: 999px; cursor: pointer; box-shadow: 0 12px 30px rgba(4,10,25,.24); opacity: .9;">{{ switcherLabel }}</button>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;flow&quot;,&quot;status&quot;],&quot;default&quot;:&quot;flow&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;statusState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;pending&quot;,&quot;correction&quot;,&quot;approved&quot;,&quot;rejected&quot;],&quot;default&quot;:&quot;pending&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Prototype&quot;},&quot;showSwitcher&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: props.startView === 'status' ? 'status' : 'flow',
+      status: props.statusState || 'pending',
+      step: 1,
+      idType: 'passport',
+      idNumber: '',
+      docs: { identity: null, work: null, address: null },
+      consent: false
+    };
+    this.refs2 = { identity: React.createRef(), work: React.createRef(), address: React.createRef() };
+  }
+
+  take(slot, file) {
+    if (!file) return;
+    const doc = {
+      name: file.name,
+      size: (file.size / 1048576).toFixed(1) + ' MB',
+      url: URL.createObjectURL(file)
+    };
+    this.setState(s => ({ docs: Object.assign({}, s.docs, { [slot]: doc }) }));
+  }
+
+  onInput(slot) {
+    return e => this.take(slot, e.target.files && e.target.files[0]);
+  }
+  onDrop(slot) {
+    return e => {
+      e.preventDefault();
+      this.take(slot, e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+    };
+  }
+  open(slot) {
+    return () => this.refs2[slot].current && this.refs2[slot].current.click();
+  }
+  clear(slot) {
+    return () => this.setState(s => ({ docs: Object.assign({}, s.docs, { [slot]: null }) }));
+  }
+
+  seg(active) { return active ? '#D4A02A' : 'rgba(26,35,61,.12)'; }
+
+  typeStyle(key) {
+    const on = this.state.idType === key;
+    return {
+      bg: on ? '#1A233D' : '#FFFFFF',
+      fg: on ? '#FFFFFF' : '#1A233D',
+      bd: on ? '#1A233D' : 'rgba(26,35,61,.18)'
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const d = s.docs;
+    const flow = s.view === 'flow';
+    const t1 = this.typeStyle('passport'), t2 = this.typeStyle('licence'), t3 = this.typeStyle('nin');
+    const numLabels = {
+      passport: ['Passport number', 'A01234567'],
+      licence: ['Licence number', 'LAG12345AA01'],
+      nin: ['National Identification Number', '12345678901']
+    }[s.idType];
+
+    const done1 = !!d.identity && s.idNumber.trim().length > 4;
+    const done2 = !!d.work && !!d.address;
+    const ok = s.step === 1 ? done1 : s.step === 2 ? done2 : s.consent;
+    const help = s.step === 1
+      ? (done1 ? 'Both items look complete.' : 'Add your ID document and number to continue.')
+      : s.step === 2
+        ? (done2 ? 'Both documents received.' : 'Both documents are required to continue.')
+        : (s.consent ? 'You can still edit any document before submitting.' : 'Tick the confirmation to submit.');
+
+    const label = {
+      identity: { passport: 'International Passport', licence: "Driver's Licence", nin: 'National ID (NIN)' }[s.idType],
+      work: 'Work or staff ID',
+      address: 'Proof of address'
+    };
+    const summary = ['identity', 'work', 'address'].filter(k => d[k]).map(k => ({
+      label: label[k],
+      name: d[k].name,
+      bg: 'url("' + d[k].url + '")',
+      meta: k === 'identity' ? s.idNumber.trim() || d[k].size : d[k].size,
+      onEdit: () => this.setState({ step: k === 'identity' ? 1 : 2 })
+    }));
+
+    return {
+      isFlow: flow,
+      isStep1: flow && s.step === 1,
+      isStep2: flow && s.step === 2,
+      isStep3: flow && s.step === 3,
+      isPending: !flow && s.status === 'pending',
+      isCorrection: !flow && s.status === 'correction',
+      isApproved: !flow && s.status === 'approved',
+      isRejected: !flow && s.status === 'rejected',
+      showSwitcher: this.props.showSwitcher !== false,
+      switcherOpen: !!s.switcherOpen,
+      switcherLabel: s.switcherOpen ? 'Close' : 'Preview',
+      toggleSwitcher: () => this.setState(st => ({ switcherOpen: !st.switcherOpen })),
+
+      step: s.step,
+      stepName: ['Identity', 'Supporting docs', 'Review'][s.step - 1],
+      seg1: this.seg(s.step >= 1), seg2: this.seg(s.step >= 2), seg3: this.seg(s.step >= 3),
+
+      t1bg: t1.bg, t1fg: t1.fg, t1bd: t1.bd,
+      t2bg: t2.bg, t2fg: t2.fg, t2bd: t2.bd,
+      t3bg: t3.bg, t3fg: t3.fg, t3bd: t3.bd,
+      pickTypePassport: () => this.setState({ idType: 'passport' }),
+      pickTypeLicence: () => this.setState({ idType: 'licence' }),
+      pickTypeNin: () => this.setState({ idType: 'nin' }),
+
+      idNumber: s.idNumber,
+      idNumberLabel: numLabels[0],
+      idNumberHint: 'e.g. ' + numLabels[1],
+      setIdNumber: e => this.setState({ idNumber: e.target.value }),
+
+      refIdentity: this.refs2.identity, refWork: this.refs2.work, refAddress: this.refs2.address,
+      takeIdentity: this.onInput('identity'), takeWork: this.onInput('work'), takeAddress: this.onInput('address'),
+      dropIdentity: this.onDrop('identity'), dropWork: this.onDrop('work'), dropAddress: this.onDrop('address'),
+      openIdentity: this.open('identity'), openWork: this.open('work'), openAddress: this.open('address'),
+      clearIdentity: this.clear('identity'), clearWork: this.clear('work'), clearAddress: this.clear('address'),
+      allowDrop: e => e.preventDefault(),
+
+      hasIdentity: !!d.identity, noIdentity: !d.identity,
+      identityName: d.identity && d.identity.name, identitySize: d.identity && d.identity.size, identityBg: d.identity ? 'url("' + d.identity.url + '")' : 'none',
+      hasWork: !!d.work, noWork: !d.work,
+      workName: d.work && d.work.name, workSize: d.work && d.work.size, workBg: d.work ? 'url("' + d.work.url + '")' : 'none',
+      hasAddress: !!d.address, noAddress: !d.address,
+      addressName: d.address && d.address.name, addressSize: d.address && d.address.size, addressBg: d.address ? 'url("' + d.address.url + '")' : 'none',
+
+      summary,
+      consent: s.consent,
+      toggleConsent: e => this.setState({ consent: e.target.checked }),
+
+      canGoBack: s.step > 1,
+      back: () => this.setState(st => ({ step: Math.max(1, st.step - 1) })),
+      next: () => {
+        if (!ok) return;
+        if (s.step < 3) this.setState({ step: s.step + 1 });
+        else this.setState({ view: 'status', status: 'pending' });
+      },
+      ctaDisabled: !ok,
+      ctaOpacity: ok ? 1 : 0.45,
+      ctaLabel: s.step === 3 ? 'Submit for verification' : 'Continue',
+      ctaHelp: help,
+
+      goReview: () => this.setState({ view: 'flow', step: 3 }),
+      goFixAddress: () => this.setState(st => ({ view: 'flow', step: 2, docs: Object.assign({}, st.docs, { address: null }) })),
+      restart: () => this.setState({ view: 'flow', step: 1, consent: false }),
+      showPending: () => this.setState({ view: 'status', status: 'pending' }),
+      showCorrection: () => this.setState({ view: 'status', status: 'correction' }),
+      showApproved: () => this.setState({ view: 'status', status: 'approved' }),
+      showRejected: () => this.setState({ view: 'status', status: 'rejected' })
+    };
+  }
+}
+</script>
+</body>
+</html>
