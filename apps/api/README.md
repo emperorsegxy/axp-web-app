@@ -20,6 +20,23 @@ npm run db:migrate     # apply migrations
 npm run dev            # http://localhost:4000
 ```
 
+## Structure
+
+Each feature lives under `src/modules/<feature>/` as a layered slice:
+
+| Layer | File | Rule |
+| --- | --- | --- |
+| Router | `*.routes.ts` | Maps paths to controller methods, applies middleware |
+| Controller | `*.controller.ts` | HTTP only — parse/validate (`*.schemas.ts`), call the service, shape the response. **Never touches the DB.** |
+| Service | `*.service.ts` | Business logic and orchestration. Calls repositories + `lib/*` (mailer, s3, jwt, hashing). |
+| Repository | `*.repository.ts` | **The only layer that imports `db`/Drizzle.** All queries live here. |
+| Serializer | `*.serializer.ts` | DB record → client-facing shape |
+
+Shared pieces: `src/http/` (error class, async wrapper, error handler), `src/middleware/`
+(`requireAuth` resolves the session cookie via the auth service; `requireInternalSecret`
+gates the reviewer-decision route), `src/config/constants.ts`, `src/lib/*` (infra helpers),
+`src/app.ts` (Express app factory; `index.ts` just calls `.listen`).
+
 ## Notes
 
 - `POST /api/kyc/:submissionId/decision` simulates a reviewer decision

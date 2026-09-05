@@ -1,16 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-
-export class HttpError extends Error {
-  status: number;
-  constructor(status: number, message: string) {
-    super(message);
-    this.status = status;
-  }
-}
+import { HttpError } from './http-error.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function errorHandler(err: unknown, req: Request, res: Response, next: NextFunction) {
+export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
   if (err instanceof ZodError) {
     return res.status(400).json({ error: 'Invalid request.', issues: err.issues });
   }
@@ -19,10 +12,4 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
   }
   console.error(err);
   return res.status(500).json({ error: 'Something went wrong. Please try again.' });
-}
-
-export function asyncHandler<T extends (req: Request, res: Response) => Promise<unknown>>(fn: T) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    fn(req, res).catch(next);
-  };
 }
